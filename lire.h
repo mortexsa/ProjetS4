@@ -1,6 +1,6 @@
+#ifndef _H_lire_
+#define _H_lire_
 #include "navalmap.h"
-#include "nm_rect.h"
-#include "lire.h"
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -13,14 +13,6 @@
 #include <stdio.h>
 
 
+navalmap_t * lireFichier(char *nomFichier);
 
-
-int main(int argv[],char *argc){
-	
-	navalmap_t *map;
-	map = lireFichier("test.txt");
-
-	free_navalmap(map);
-			
-}
-	
+#endif

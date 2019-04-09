@@ -26,12 +26,20 @@ typedef struct {
 	int id;					//< Identifiant de l'entité
 } entityid_t;
 
+//caracteristique du bateau
+typedef struct {
+	int Cmax;
+	int Kmax;
+	int nbTours;
+} shipParam;
+
 // Carte navale
 typedef struct navalmap {
 	map_t	type;				//< Type de la carte
 	coord_t	size;				//< Taille de la carte
 	int		nbShips;			//< Nombre de navires (joueurs) sur la carte
 	coord_t	* shipPosition;		//< Position des navires
+	shipParam * shipCarac;      //< caracteristique des navires;
 	entityid_t ** map;		    //< Carte des entités
 
 	// Les pointeurs de fonctions peuvent être utilisés de la manière suivante :

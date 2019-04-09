@@ -21,6 +21,9 @@ navalmap_t * init_navalmap (const map_t	mapType,const coord_t mapSize,const int 
 	for (j = 0; j < nbShips; ++j)
 		nmap->shipPosition [j] .x = -1;
 		nmap->map = malloc (mapSize.y * sizeof (entityid_t *) );
+
+	nmap->shipCarac = malloc (nbShips * sizeof (shipParam *) );
+
 	for (j = 0; j < mapSize.y; ++j)
 		nmap->map [j] = malloc (mapSize.x * sizeof (entityid_t) );
 
@@ -51,11 +54,11 @@ void free_navalmap (
 		free (nmap->map [j]);
 	free (nmap->map);
 	free (nmap->shipPosition);
+	free (nmap->shipCarac);
 	free (nmap);
 }
 
-void moveShip (navalmap_t	* nmap,c
-+onst int	shipID,const coord_t moveVec) {
+void moveShip (navalmap_t	* nmap,const int	shipID,const coord_t moveVec) {
 	if (! nmap->isMovePossible (nmap, shipID, moveVec) ) return;
 
 	nmap->map [nmap->shipPosition [shipID] .y][nmap->shipPosition [shipID] .x] .type = ENT_SEA;
