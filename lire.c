@@ -3,7 +3,7 @@
 navalmap_t * lireFichier(char *nomFichier){
 	int fd = open(nomFichier,O_RDONLY);
 	char buffer[2];
-	char stock[7][256] = {0};
+	char stock[8][256] = {0};
 	
 	int stockEntier[6] = {0};
 	int i = 0;
@@ -37,7 +37,6 @@ navalmap_t * lireFichier(char *nomFichier){
 		mapType=MAP_TOTAL;
 	}
 	map=init_navalmap(mapType,size,stockEntier[2]);
-
 	for(int y = 0; y < map->nbShips ; y++) {
 		map->shipCarac[y].Cmax = stockEntier[3];
 		map->shipCarac[y].Kmax = stockEntier[4];

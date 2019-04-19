@@ -1,7 +1,13 @@
 #include "navalmap.h"
+#include "jouer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#include <math.h>
 
 void initNavalMapLib () {
 
@@ -17,12 +23,23 @@ navalmap_t * init_navalmap (const map_t	mapType,const coord_t mapSize,const int 
 	nmap->type = mapType;
 	nmap->size = mapSize;
 	nmap->nbShips = nbShips;
-	nmap->shipPosition = malloc (nbShips * sizeof (coord_t) );
-	for (j = 0; j < nbShips; ++j)
+	nmap->shipPosition = malloc (nmap->nbShips * sizeof (coord_t) );
+	
+	nmap->shipCarac = malloc (nmap->nbShips * sizeof (shipParam *) );
+	
+	for (j = 0; j < nbShips; ++j) {
 		nmap->shipPosition [j] .x = -1;
-		nmap->map = malloc (mapSize.y * sizeof (entityid_t *) );
+		nmap->shipCarac [j].posEnnemie.x = -1;
+		nmap->shipCarac [j].posEnnemie.y = -1;
+	}
 
-	nmap->shipCarac = malloc (nbShips * sizeof (shipParam *) );
+	for (int i=0; i<nbShips; ++i) {
+		 nmap->shipCarac[i].etat=inconnu;
+	}
+	
+	nmap->map = malloc (mapSize.y * sizeof (entityid_t *) );
+
+	
 
 	for (j = 0; j < mapSize.y; ++j)
 		nmap->map [j] = malloc (mapSize.x * sizeof (entityid_t) );
@@ -52,9 +69,9 @@ void free_navalmap (
 	int	j;
 	for (j = 0; j < nmap->size.y; ++j)
 		free (nmap->map [j]);
+	free (nmap->shipCarac);
 	free (nmap->map);
 	free (nmap->shipPosition);
-	free (nmap->shipCarac);
 	free (nmap);
 }
 
@@ -108,3 +125,82 @@ void placeShip (
 	nmap->map [pos.y][pos.x] .type = ENT_SHIP;
 	nmap->map [pos.y][pos.x] .id = shipID;
 }
+int isAtkPossible(navalmap_t * nmap,const int	shipID,	const coord_t atkVec) {    		
+	int distance = sqrt((atkVec.x * atkVec.x)+(atkVec.y*atkVec.y));
+	if (shipID >= nmap->nbShips) return 0;
+	
+	
+
+	return (nmap->shipPosition [shipID] .x + atkVec.x >= 0
+		 && nmap->shipPosition [shipID] .x + atkVec.x < nmap->size.x
+		 && nmap->shipPosition [shipID] .y + atkVec.y >= 0
+		 && nmap->shipPosition [shipID] .y + atkVec.y < nmap->size.y
+		 && distance > 2 && distance < 4);
+}
+void Process(navalmap_t *nmap ){
+	const int shipID;
+	pid_t pid;
+	int ret;
+	int desctipteurTube[2];
+
+
+
+	ret = pipe(desctipteurTube);
+	
+	if (pipe(desctipteurTube) == -1) {  						
+    			printf("Erreur pipe");  								 
+    			exit(1); 												
+  			}
+	// Processus fils 
+	
+	for(int i = 0; i <nmap->nbShips; i++){
+		
+		if((pid = fork()) == 0){  
+
+			
+		//	write(desctipteurTube[i],Algorithme_deJeu(nmap,shipID),256);
+			sleep(1);
+			
+			exit(0);
+		}
+	}
+	// Processus père
+	
+	for (int j= 0; j <nmap->nbShips ; j++)
+	{
+		int p;
+		
+		
+		exit(pid);
+		wait(&pid);
+		
+		p = WEXITSTATUS(pid);
+		
+	}
+}
+			 
+void Algorithme_deJeu(navalmap_t *nmap , const int shipID){
+
+	
+	coord_t attackVec = {nmap->shipCarac[shipID].posEnnemie.x - nmap->shipPosition[shipID].x, nmap->shipCarac[shipID].posEnnemie.y - nmap->shipPosition[shipID].y };
+
+	if (nmap->shipCarac[shipID].etat == inconnu){
+
+		radar(nmap,shipID);
+	
+	}
+	else if (isAtkPossible(nmap, shipID, attackVec)){
+		
+		atk(nmap,shipID);
+	
+	}else {
+	
+		mov(nmap,shipID);
+	
+	}
+}
+			
+
+			
+
+	

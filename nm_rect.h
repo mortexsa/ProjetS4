@@ -26,3 +26,4 @@ int * rect_getTargets (
 	const coord_t						pos,
 	const int							dist,
 	int									* nbShips);
+

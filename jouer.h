@@ -6,5 +6,6 @@
 void non(navalmap_t * nmap, const int shipID);
 void mov(navalmap_t * nmap, const int shipID);
 void atk(navalmap_t * nmap, const int shipID);
-
+void radar(navalmap_t * nmap,const int shipID);
+void reparation(navalmap_t * nmap,const int shipID);
 #endif

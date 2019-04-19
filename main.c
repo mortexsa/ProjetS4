@@ -16,15 +16,27 @@
 
 
 
-int main(int argv[],char *argc){
-	
-	navalmap_t *map;
-	map = lireFichier("test.txt");
+int main(int argc,char **argv){
 	initNavalMapLib ();
-	placeRemainingShipsAtRandom(map);
-	printf("x : %d y : %d\n", map->shipPosition[0].x, map->shipPosition[0].y);
-	mov(map,0);
-	printf("x : %d y : %d\n", map->shipPosition[0].x, map->shipPosition[0].y);
+	
+
+	navalmap_t *map;
+	
+	map = lireFichier(argv[1]);
+	
+	
+	placeRemainingShipsAtRandom(map); 								    // place les navire dans la map
+
+	for (int i = 0; i < map->nbShips; i++) {
+		printf(" Navire %d : (%d,%d)\n", i, map->shipPosition[i].x, map->shipPosition[i].y);
+	}
+	
+	radar(map,0);  														// le radar 
+	//atk(map,0);  														// l'attaque basique
+	mov(map,0);   														// deplacement 
+	reparation(map,0); 													// reparation du navir fait gagner 25C
+	//Process(map); 
+	
 	free_navalmap(map);
 	return 0;
 }

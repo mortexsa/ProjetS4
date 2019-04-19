@@ -1,6 +1,7 @@
 #ifndef _H_NAVALMAP_
 #define _H_NAVALMAP_
 
+
 // Paire d'entiers représentant entre autre des coordonnées
 typedef struct {
 	int	x;					//< Premier entier
@@ -13,6 +14,10 @@ typedef enum {
 	MAP_TOTAL
 } map_t;
 
+typedef enum {
+	connu,
+	inconnu
+}etat_t;
 // Type d'entité présente sur la carte navale
 typedef enum {
 	ENT_SEA,												//< Case maritime
@@ -31,7 +36,12 @@ typedef struct {
 	int Cmax;
 	int Kmax;
 	int nbTours;
+	coord_t posEnnemie;
+	etat_t etat;
+	
+
 } shipParam;
+
 
 // Carte navale
 typedef struct navalmap {
@@ -100,6 +110,19 @@ void placeShip (
 	navalmap_t							* nmap,
 	const int							shipID,
 	const coord_t						pos);
+// Test si l'attaque est possible
+// \param 								nmap 				Carte navale
+// \param  								shipID				Identifiant du navire
+// \param 								atkVec				Vecteur d'attaque
+// \return 													1 la postion du navire adverse
+int isAtkPossible (
+	navalmap_t 							* nmap,
+	const int							shipID,	
+	const coord_t 						atkVec);
+
+void Process(navalmap_t *nmap);
+
+void Algorithme_deJeu(navalmap_t *nmap , const int shipID);
 
 #include "nm_rect.h"
 

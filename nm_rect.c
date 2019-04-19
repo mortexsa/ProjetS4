@@ -1,5 +1,6 @@
 #include "navalmap.h"
 #include <stdlib.h>
+#include <math.h>
 
 void rect_initEntityMap (
 	navalmap_t							* nmap) {
